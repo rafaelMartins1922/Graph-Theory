@@ -10,7 +10,7 @@ import main.interfaces.IGraphRepresentation;
 
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.util.LinkedList;
+import java.util.ArrayList;
 import java.util.Scanner;
 
 public class GraphAnalysis {
@@ -34,7 +34,7 @@ public class GraphAnalysis {
                 graph = new AdjacentMatrix();
                 break;
             case "AdjacentList":
-                graph = new AdjacentList("src/graph_repo/" + file);
+                graph = new AdjacentList(graphData);
                 break;
         }
     }
@@ -58,22 +58,21 @@ public class GraphAnalysis {
         try {
             File file = new File("src/graph_repo/" + graphFile);
             Scanner fileScanner = new Scanner(file);
-            int lines = fileScanner.nextInt();
-            int index = 0;
-            graphData.edges = new Edge[lines];
-            while (fileScanner.hasNextLine()) {
-                int E1 = fileScanner.nextInt();
-                int E2 = fileScanner.nextInt();
+            graphData.NumberOfVertices = fileScanner.nextInt();
+            graphData.Edges = new ArrayList<>();
+            graphData.Vertices = new ArrayList<>();
+            graphData.MaxVertex = 0;
+            while (fileScanner.hasNextInt()) {
+                int Node1 = fileScanner.nextInt();
+                int Node2 = fileScanner.nextInt();
                 Edge edge = new Edge();
-                edge.firstNode = E1;
-                edge.secondNode = E2;
-                graphData.edges[index] = edge;
-                index++;
-            }
-            for (int i = 0; i < lines; i++) {
-                System.out.print(i + " -> ");
-                for (var k : graphData.vertices) System.out.print(k + " ");
-                System.out.println();
+                edge.firstNode = Node1;
+                edge.secondNode = Node2;
+                graphData.Edges.add(edge);
+                if(!graphData.Vertices.contains(Node1)) graphData.Vertices.add(Node1);
+                if(!graphData.Vertices.contains(Node2)) graphData.Vertices.add(Node2);
+                if(Node1 > graphData.MaxVertex) graphData.MaxVertex = Node1;
+                if(Node2 > graphData.MaxVertex) graphData.MaxVertex = Node2;
             }
         } catch (FileNotFoundException e) {
             e.printStackTrace();
