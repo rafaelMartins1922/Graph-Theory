@@ -31,7 +31,7 @@ public class GraphAnalysis {
 
         switch (representationType) {
             case "AdjacentMatrix":
-                graph = new AdjacentMatrix();
+                graph = new AdjacentMatrix(graphData);
                 break;
             case "AdjacentList":
                 graph = new AdjacentList(graphData);
