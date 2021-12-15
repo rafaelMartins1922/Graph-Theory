@@ -1,0 +1,5 @@
+Grau máximo:994
+Grau mínimo:1
+Mediana de Grau:2
+Número de vértices:1618
+Número de arestas:5000
