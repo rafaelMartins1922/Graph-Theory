@@ -14,9 +14,11 @@ import java.io.IOException;
 import java.io.FileWriter;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
-import java.util.List;
+import java.util.LinkedList;
 import java.util.Scanner;
 
 public class GraphAnalysis {
@@ -41,11 +43,15 @@ public class GraphAnalysis {
                 AdjacentMatrix graphAdjMatrix = new AdjacentMatrix(graphData);
                // PrintAdjMatrix(graphAdjMatrix);
                 SaveAdjMatrixOutput(graphAdjMatrix, outputFilePath);
+                BFS(null, graphAdjMatrix, 1);
+                //DFS(null, graphAdjMatrix, 1);
                 break;
             case "AdjacentList":
                 AdjacentList graphAdjList = new AdjacentList(graphData);
                 //PrintAdjList(graphAdjList);
                 SaveAdjListOutput(graphAdjList, outputFilePath);
+                BFS(graphAdjList, null, 1);
+                //DFS(graphAdjList, null, 1);
                 break;
         }
         
@@ -136,7 +142,7 @@ public class GraphAnalysis {
 
     private static String GetFileFromUser(Scanner consoleScanner) {
         System.out.println("Escolha o numero do grafo a ser analisado:");
-        for (int i = 0; i < 2; i++) System.out.println(" " + (i +1) + " para " + GraphFiles.fileNames[i]);
+        for (int i = 0; i < 3; i++) System.out.println(" " + (i +1) + " para " + GraphFiles.fileNames[i]);
         return GraphFiles.fileNames[consoleScanner.nextInt() - 1];
     }
 
@@ -163,7 +169,6 @@ public class GraphAnalysis {
                 while (fileScanner.hasNextInt()) {
                     int Node1 = fileScanner.nextInt();
                     int Node2 = fileScanner.nextInt();
-                    System.out.println("Node1:" + Node1 + ", Node2:" + Node2);
                     Edge edge = new Edge();
                     edge.firstNode = Node1;
                     edge.secondNode = Node2;
@@ -190,15 +195,17 @@ public class GraphAnalysis {
 
                 graphData.AverageDegree = 2*graphData.Edges.size()/graphData.Vertices.size();
 
-                List<Integer> graphDegreesList = new ArrayList<Integer>(graphDegreesHash.values());
+                ArrayList<Integer> graphDegreesList = new ArrayList<Integer>(graphDegreesHash.values());
                 Collections.sort(graphDegreesList);
                 System.out.println("Graus do grafo:");
 
                 int countDeg = 0;
-                for(int deg : graphDegreesList) {
-                    countDeg++;
-                    System.out.println(countDeg + "->" + deg);
-                }
+                
+                //imprime lista ordenada de graus do grafo
+                // for(int deg : graphDegreesList) {
+                //     countDeg++;
+                //     System.out.println(countDeg + "->" + deg);
+                // }
 
                 countDeg = 0;
 
@@ -223,4 +230,118 @@ public class GraphAnalysis {
         return graphData;
     }
 
+    private static void BFS(AdjacentList graphAdjList, AdjacentMatrix graphAdjMatrix, int s) {
+        boolean markedVertices[];
+        LinkedList<Integer> queue = new LinkedList<Integer>();
+        ArrayList<Integer> discovered = new ArrayList<Integer>();
+        ArrayList<Integer> explored = new ArrayList<Integer>();
+
+        queue.add(s);
+        discovered.add(s);
+
+        if (graphAdjMatrix != null) {
+            markedVertices = new boolean[graphAdjMatrix.Graph.length + 1];
+            markedVertices[s] = true;
+           
+            while(!queue.isEmpty()) {
+                int v = queue.poll();
+                explored.add(v);
+                for (int w = 0; w < graphAdjMatrix.Graph[v].length; w++) {
+                    if (!markedVertices[w] && graphAdjMatrix.Graph[v][w] == 1) {
+                        markedVertices[w] = true;
+                        queue.add(w);
+                        discovered.add(w);
+                    }
+                }
+            }
+        } else {
+            markedVertices = new boolean[graphAdjList.Graph.length+1];
+            markedVertices[s] = true;
+            
+            
+            while(!queue.isEmpty()) {
+                Comparator<Integer> order = Integer::compare;
+                int v = queue.poll();
+                explored.add(v);
+                graphAdjList.Graph[v].sort(order);
+                System.out.print(v + "-> ") ;
+                for (Integer w : graphAdjList.Graph[v]) {
+                   
+                    System.out.print(w + " ");
+                    if (!markedVertices[w]) {
+                        markedVertices[w] = true;
+                        queue.add(w);
+                        discovered.add(w);
+                    }
+                }
+                System.out.print("\n");
+            }
+        }
+
+        System.out.println("Vértices descobertos:");
+        for(int vertex : discovered) {
+            System.out.print(vertex + " ");
+        }
+
+        System.out.println("\nVértices explorados:");
+        for(int vertex : explored) {
+            System.out.print(vertex + " ");
+        }
+    }
+
+    private static void DFS(AdjacentList graphAdjList, AdjacentMatrix graphAdjMatrix, int s) {
+        boolean markedVertices[];
+        ArrayList<Integer> stack = new ArrayList<Integer>();
+        ArrayList<Integer> stacked = new ArrayList<Integer>();
+        ArrayList<Integer> marked = new ArrayList<Integer>();
+        System.out.println("SDHGFÇFJSJGHSAJFHG");
+        stack.add(s);
+        stacked.add(s);
+        if(graphAdjMatrix != null) {
+           markedVertices = new boolean[graphAdjMatrix.Graph.length + 1];
+            while(!stack.isEmpty()) {
+                int u = stack.get(stack.size() - 1);
+                stack.remove(stack.size() - 1);
+                if(!markedVertices[u]) {
+                    markedVertices[u] = true;
+                    marked.add(u);
+                    for (int v = graphAdjMatrix.Graph[u].length - 1; v >= 0; v--) {
+                        if(graphAdjMatrix.Graph[u][v] == 1){
+                            stack.add(v);
+                            stacked.add(v);
+                        }
+                    }
+                }
+            }
+        } else {
+            System.out.println("SDHGFÇFJSJGHSAJFHG");
+            markedVertices = new boolean[graphAdjList.Graph.length + 1];
+            while(!stack.isEmpty()) {
+                int u = stack.get(stack.size() - 1);
+                stack.remove(stack.size() - 1);
+                System.out.println("SDHGFÇFJSJGHSAJFHG");
+                if(!markedVertices[u]) {
+                    markedVertices[u] = true;
+                    marked.add(u);
+                    Comparator<Integer> order = Integer::compare;
+                    graphAdjList.Graph[u].sort(order.reversed());
+                    for (Integer v : graphAdjList.Graph[u]) {
+                        stack.add(v);
+                        stacked.add(v);
+                    }
+                }
+            }
+        }
+        
+
+        System.out.println("Vértices na pilha:");
+        for(int vertex : stacked) {
+            System.out.print(vertex + " ");
+        }
+
+        System.out.println("\nVértices marcados:");
+        for(int vertex : marked) {
+            System.out.print(vertex + " ");
+        }
+    }
 }
