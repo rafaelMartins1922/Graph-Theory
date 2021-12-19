@@ -43,17 +43,19 @@ public class GraphAnalysis {
             case "AdjacentMatrix":
                 AdjacentMatrix graphAdjMatrix = new AdjacentMatrix(graphData);
                 // PrintAdjMatrix(graphAdjMatrix);
-                SaveAdjMatrixOutput(graphAdjMatrix, outputFilePath);
+                //SaveAdjMatrixOutput(graphAdjMatrix, outputFilePath);
                 BuildSearchTree(null, graphAdjMatrix, 1, "DFS");
+                SaveConnectedComponentInfo(null, graphAdjMatrix);
                 break;
             case "AdjacentList":
                 AdjacentList graphAdjList = new AdjacentList(graphData);
                 //PrintAdjList(graphAdjList);
-                SaveAdjListOutput(graphAdjList, outputFilePath);
-                BuildSearchTree(graphAdjList, null, 1, "DFS");
+                //SaveAdjListOutput(graphAdjList, outputFilePath);
+                // BuildSearchTree(graphAdjList, null, 1, "DFS");
                 //DFS(graphAdjList, null, 1);
+                SaveConnectedComponentInfo(graphAdjList, null);
                 break;
-        }
+         }
         
     }
 
@@ -292,7 +294,7 @@ public class GraphAnalysis {
             System.out.print(vertex + " ");
         }
 
-        System.out.println("\nVértices explorados:");
+        System.out.println("\nVértices explorados:\n");
         for(int vertex : explored) {
             System.out.print(vertex + " ");
         }
@@ -412,5 +414,71 @@ public class GraphAnalysis {
         }
     }
 
+    private static ArrayList<ArrayList<Integer>> GetConnectedComponents(AdjacentList graphAdjList, AdjacentMatrix graphAdjMatrix) {
+        ArrayList<ArrayList<Integer>> connectedComponents = new ArrayList<ArrayList<Integer>>();
+        ArrayList<Integer> unexploredVertices;
 
+        if(graphAdjMatrix != null) {
+            unexploredVertices = new ArrayList<>(graphAdjMatrix.vertices);
+        } else {
+            unexploredVertices = new ArrayList<>(graphAdjList.vertices);
+        }
+
+        while(unexploredVertices.size() != 0) {
+            int root = unexploredVertices.get(0);
+            HashMap<String, int[]> bfsData = BFS(graphAdjList, graphAdjMatrix, root);
+            int[] markedVertices = bfsData.get("markedVertices");
+            ArrayList<Integer> newConnectedComponent = new ArrayList<Integer>();
+
+
+            for(int i = 0; i < markedVertices.length; i++) {
+                if(markedVertices[i] == 1) {
+                    unexploredVertices.remove(Integer.valueOf(i));
+                    newConnectedComponent.add(i);
+                }
+            }
+            connectedComponents.add(newConnectedComponent);
+        }
+
+        return connectedComponents;
+    }
+
+    private static void SaveConnectedComponentInfo(AdjacentList graphAdjList, AdjacentMatrix graphAdjMatrix) {
+        ArrayList<ArrayList<Integer>> connectedComponents = GetConnectedComponents(graphAdjList, graphAdjMatrix);
+        String outputFilePath = CreateOutputFile("connected_components_info");
+        
+        Collections.sort(connectedComponents, new Comparator<ArrayList<Integer>>(){
+            public int compare(ArrayList<Integer> a1, ArrayList<Integer> a2) {
+                return a2.size() - a1.size();
+            }
+        });
+
+        try {
+            FileWriter fileWriter = new FileWriter(outputFilePath);
+            fileWriter.write("Número de componentes conexas do grafo: " + connectedComponents.size()+ "\n");
+            fileWriter.write("Dados das componentes (em ordem decrescente de tamanho): \n");
+            int i = 1;
+            for(ArrayList<Integer> component : connectedComponents) {
+                fileWriter.write("Componente "+ i + ":\n");
+                fileWriter.write("  Tamanho: " + component.size() + "\n");
+                fileWriter.write("  Vértices: \n");
+                for(int vertex : component) {
+                    fileWriter.write("      " + vertex + "\n");
+                }
+                i++;
+            }
+
+            fileWriter.close();
+        } catch (IOException e) {
+            System.out.println("Erro.");
+            e.printStackTrace();
+        }
+    }
 }
+
+// ArrayList<Integer> aaa = new ArrayList<>();
+//        aaa.add(0);
+//        aaa.add(12);
+//        System.out.println(aaa);
+//        aaa.remove(Integer.valueOf(12));
+//        System.out.println(aaa);

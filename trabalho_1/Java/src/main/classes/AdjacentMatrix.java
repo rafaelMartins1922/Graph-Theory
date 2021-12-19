@@ -7,6 +7,7 @@ import java.util.ArrayList;
 
 public class AdjacentMatrix implements IGraphRepresentation {
     public int[][] Graph;
+    public ArrayList<Integer>vertices;
     public int numberOfEdges;
     public int numberOfVertices;
     public int maxDegree;
@@ -19,6 +20,7 @@ public class AdjacentMatrix implements IGraphRepresentation {
         maxDegree = graphData.MaxDegree;
         minDegree = graphData.MinDegree;
         medianDegree = graphData.MedianDegree;
+        vertices = graphData.Vertices;
         CreateGraph(graphData);
     }
 
