@@ -234,7 +234,6 @@ public class GraphAnalysis {
         int markedVertices[];
         int[] parents;
         int[] levels;
-        int currentLevel = 0;
         LinkedList<Integer> queue = new LinkedList<Integer>();
         ArrayList<Integer> discovered = new ArrayList<Integer>();
         ArrayList<Integer> explored = new ArrayList<Integer>();
@@ -250,7 +249,6 @@ public class GraphAnalysis {
 
             while(!queue.isEmpty()) {
                 int v = queue.poll();
-                currentLevel = levels[v];
                 explored.add(v);
                 for (int w = 0; w < graphAdjMatrix.Graph[v].length; w++) {
                     if (!(markedVertices[w] == 1) && graphAdjMatrix.Graph[v][w] == 1) {
@@ -258,7 +256,8 @@ public class GraphAnalysis {
                         queue.add(w);
                         discovered.add(w);
                         parents[w] = v;
-                        levels[w] = currentLevel + 1;
+                        levels[w] = levels[v] + 1;
+                        parents[w] = v;
                     }
                 }
             }
@@ -272,7 +271,6 @@ public class GraphAnalysis {
                 Comparator<Integer> order = Integer::compare;
                 int v = queue.poll();
 
-                currentLevel = levels[v];
                 explored.add(v);
                 graphAdjList.Graph[v].sort(order);
 
@@ -282,11 +280,10 @@ public class GraphAnalysis {
                         queue.add(w);
                         discovered.add(w);
                         parents[w] = v;
-                        levels[w] = currentLevel + 1;
+                        levels[w] = levels[v] + 1;
+                        parents[w] = v;
                     }
                 }
-
-                currentLevel++;
             }
         }
 
@@ -335,7 +332,10 @@ public class GraphAnalysis {
                         if(graphAdjMatrix.Graph[u][v] == 1){
                             stack.add(v);
                             stacked.add(v);
-                            if(!(markedVertices[v] == 1)) levels[v] = levels[u] + 1;
+                            if(!(markedVertices[v] == 1)) {
+                                levels[v] = levels[u] + 1;
+                                parents[v] = u;
+                            };
                         }
                     }
                 }
@@ -408,4 +408,6 @@ public class GraphAnalysis {
             e.printStackTrace();
         }
     }
+
+
 }
