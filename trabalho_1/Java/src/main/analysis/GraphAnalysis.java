@@ -42,16 +42,15 @@ public class GraphAnalysis {
         switch (representationType) {
             case "AdjacentMatrix":
                 AdjacentMatrix graphAdjMatrix = new AdjacentMatrix(graphData);
-               // PrintAdjMatrix(graphAdjMatrix);
+                // PrintAdjMatrix(graphAdjMatrix);
                 SaveAdjMatrixOutput(graphAdjMatrix, outputFilePath);
-                BFS(null, graphAdjMatrix, 1);
-                //DFS(null, graphAdjMatrix, 1);
+                BuildSearchTree(null, graphAdjMatrix, 1, "DFS");
                 break;
             case "AdjacentList":
                 AdjacentList graphAdjList = new AdjacentList(graphData);
                 //PrintAdjList(graphAdjList);
                 SaveAdjListOutput(graphAdjList, outputFilePath);
-                BFS(graphAdjList, null, 1);
+                BuildSearchTree(graphAdjList, null, 1, "DFS");
                 //DFS(graphAdjList, null, 1);
                 break;
         }
@@ -244,14 +243,14 @@ public class GraphAnalysis {
         discovered.add(s);
 
         if (graphAdjMatrix != null) {
-            markedVertices = new int[graphAdjMatrix.Graph.length + 1];
+            markedVertices = new int[graphAdjMatrix.Graph.length];
             markedVertices[s] = 1;
-            parents = new int[graphAdjMatrix.Graph.length + 1];
-            levels = new int[graphAdjMatrix.Graph.length + 1];
+            parents = new int[graphAdjMatrix.Graph.length];
+            levels = new int[graphAdjMatrix.Graph.length];
 
             while(!queue.isEmpty()) {
                 int v = queue.poll();
-
+                currentLevel = levels[v];
                 explored.add(v);
                 for (int w = 0; w < graphAdjMatrix.Graph[v].length; w++) {
                     if (!(markedVertices[w] == 1) && graphAdjMatrix.Graph[v][w] == 1) {
@@ -262,18 +261,18 @@ public class GraphAnalysis {
                         levels[w] = currentLevel + 1;
                     }
                 }
-
-                currentLevel++;
             }
         } else {
             markedVertices = new int[graphAdjList.Graph.length+1];
             markedVertices[s] = 1;
-            parents = new int[graphAdjList.Graph.length + 1];
-            levels = new int[graphAdjList.Graph.length + 1];
+            parents = new int[graphAdjList.Graph.length];
+            levels = new int[graphAdjList.Graph.length];
             
             while(!queue.isEmpty()) {
                 Comparator<Integer> order = Integer::compare;
                 int v = queue.poll();
+
+                currentLevel = levels[v];
                 explored.add(v);
                 graphAdjList.Graph[v].sort(order);
 
@@ -301,6 +300,7 @@ public class GraphAnalysis {
             System.out.print(vertex + " ");
         }
 
+        parents[s] = -1;
         HashMap<String, int[]> treeInfo = new HashMap<String, int[]>();
         treeInfo.put("parents", parents);
         treeInfo.put("levels", levels);
@@ -312,7 +312,6 @@ public class GraphAnalysis {
         int markedVertices[];
         int parents[];
         int levels[];
-        int currentLevel = 0;
         ArrayList<Integer> stack = new ArrayList<Integer>();
         ArrayList<Integer> stacked = new ArrayList<Integer>();
         ArrayList<Integer> marked = new ArrayList<Integer>();
@@ -321,13 +320,14 @@ public class GraphAnalysis {
         stacked.add(s);
 
         if(graphAdjMatrix != null) {
-           markedVertices = new int[graphAdjMatrix.Graph.length + 1];
-           parents = new int[graphAdjMatrix.Graph.length + 1];
-           levels = new int[graphAdjMatrix.Graph.length + 1];
-
+           markedVertices = new int[graphAdjMatrix.Graph.length];
+           parents = new int[graphAdjMatrix.Graph.length];
+           levels = new int[graphAdjMatrix.Graph.length];
+            
             while(!stack.isEmpty()) {
                 int u = stack.get(stack.size() - 1);
                 stack.remove(stack.size() - 1);
+
                 if(!(markedVertices[u] == 1)) {
                     markedVertices[u] = 1;
                     marked.add(u);
@@ -335,19 +335,15 @@ public class GraphAnalysis {
                         if(graphAdjMatrix.Graph[u][v] == 1){
                             stack.add(v);
                             stacked.add(v);
+                            if(!(markedVertices[v] == 1)) levels[v] = levels[u] + 1;
                         }
                     }
                 }
-
-                int nextVertex = stack.get(stack.size() - 1);
-                parents[nextVertex] = u;
-                levels[nextVertex] = currentLevel + 1;
-                currentLevel++;
             }
         } else {
-            markedVertices = new int[graphAdjList.Graph.length + 1];
-            parents = new int[graphAdjList.Graph.length + 1];
-            levels = new int[graphAdjList.Graph.length + 1];
+            markedVertices = new int[graphAdjList.Graph.length];
+            parents = new int[graphAdjList.Graph.length];
+            levels = new int[graphAdjList.Graph.length];
 
             while(!stack.isEmpty()) {
                 int u = stack.get(stack.size() - 1);
@@ -361,13 +357,9 @@ public class GraphAnalysis {
                     for (Integer v : graphAdjList.Graph[u]) {
                         stack.add(v);
                         stacked.add(v);
+                        if(!(markedVertices[v] == 1)) levels[v] = levels[u] + 1;
                     }
                 }
-
-                int nextVertex = stack.get(stack.size() - 1);
-                parents[nextVertex] = u;
-                levels[nextVertex] = currentLevel + 1;
-                currentLevel++;
             }
         }
         
@@ -406,6 +398,7 @@ public class GraphAnalysis {
     private static void SaveSearchTreeOutput(HashMap<String, int[]> treeInfo, String outputFilePath) {
         try {
             FileWriter fileWriter = new FileWriter(outputFilePath);
+            System.out.println(treeInfo.get("parents").length);
             for (int i = 0; i < treeInfo.get("parents").length; i++) {
                 fileWriter.write("Vértice: " + i + ", pai: " + treeInfo.get("parents")[i] + ", nível na árvore de busca: " + treeInfo.get("levels")[i] + "\n");
             }
