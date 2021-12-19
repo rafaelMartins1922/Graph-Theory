@@ -357,7 +357,10 @@ public class GraphAnalysis {
                     for (Integer v : graphAdjList.Graph[u]) {
                         stack.add(v);
                         stacked.add(v);
-                        if(!(markedVertices[v] == 1)) levels[v] = levels[u] + 1;
+                        if(!(markedVertices[v] == 1)) {
+                            levels[v] = levels[u] + 1;
+                            parents[v] = u;
+                        };
                     }
                 }
             }
