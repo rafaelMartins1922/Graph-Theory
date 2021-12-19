@@ -11,6 +11,7 @@ import main.interfaces.IGraphRepresentation;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.lang.reflect.Array;
 import java.io.FileWriter;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -23,7 +24,7 @@ import java.util.Scanner;
 
 public class GraphAnalysis {
     public static void main(String[] args) {
-        AnalyseGraph(null, null);
+       AnalyseGraph(null, null);
     }
 
     private static void AnalyseGraph(String inputFile, String representationType) {
@@ -36,7 +37,7 @@ public class GraphAnalysis {
         }
         
         GraphData graphData = SetGraphData(inputFile);
-        String outputFilePath = CreateOutputFile();
+        String outputFilePath = CreateOutputFile("output");
 
         switch (representationType) {
             case "AdjacentMatrix":
@@ -57,8 +58,8 @@ public class GraphAnalysis {
         
     }
 
-    private static String CreateOutputFile() {
-        String filePath = Paths.get("").toAbsolutePath().toString() + "/output_files/output.txt";
+    private static String CreateOutputFile(String filename) {
+        String filePath = Paths.get("").toAbsolutePath().toString() + "/output_files/" + filename + ".txt";
         try {
             
             File outputFile = new File(Paths.get("").toAbsolutePath().toString() + "/output.txt");
@@ -230,8 +231,11 @@ public class GraphAnalysis {
         return graphData;
     }
 
-    private static void BFS(AdjacentList graphAdjList, AdjacentMatrix graphAdjMatrix, int s) {
-        boolean markedVertices[];
+    private static HashMap<String, int[]> BFS(AdjacentList graphAdjList, AdjacentMatrix graphAdjMatrix, int s) {
+        int markedVertices[];
+        int[] parents;
+        int[] levels;
+        int currentLevel = 0;
         LinkedList<Integer> queue = new LinkedList<Integer>();
         ArrayList<Integer> discovered = new ArrayList<Integer>();
         ArrayList<Integer> explored = new ArrayList<Integer>();
@@ -240,41 +244,50 @@ public class GraphAnalysis {
         discovered.add(s);
 
         if (graphAdjMatrix != null) {
-            markedVertices = new boolean[graphAdjMatrix.Graph.length + 1];
-            markedVertices[s] = true;
-           
+            markedVertices = new int[graphAdjMatrix.Graph.length + 1];
+            markedVertices[s] = 1;
+            parents = new int[graphAdjMatrix.Graph.length + 1];
+            levels = new int[graphAdjMatrix.Graph.length + 1];
+
             while(!queue.isEmpty()) {
                 int v = queue.poll();
+
                 explored.add(v);
                 for (int w = 0; w < graphAdjMatrix.Graph[v].length; w++) {
-                    if (!markedVertices[w] && graphAdjMatrix.Graph[v][w] == 1) {
-                        markedVertices[w] = true;
+                    if (!(markedVertices[w] == 1) && graphAdjMatrix.Graph[v][w] == 1) {
+                        markedVertices[w] = 1;
                         queue.add(w);
                         discovered.add(w);
+                        parents[w] = v;
+                        levels[w] = currentLevel + 1;
                     }
                 }
+
+                currentLevel++;
             }
         } else {
-            markedVertices = new boolean[graphAdjList.Graph.length+1];
-            markedVertices[s] = true;
-            
+            markedVertices = new int[graphAdjList.Graph.length+1];
+            markedVertices[s] = 1;
+            parents = new int[graphAdjList.Graph.length + 1];
+            levels = new int[graphAdjList.Graph.length + 1];
             
             while(!queue.isEmpty()) {
                 Comparator<Integer> order = Integer::compare;
                 int v = queue.poll();
                 explored.add(v);
                 graphAdjList.Graph[v].sort(order);
-                System.out.print(v + "-> ") ;
+
                 for (Integer w : graphAdjList.Graph[v]) {
-                   
-                    System.out.print(w + " ");
-                    if (!markedVertices[w]) {
-                        markedVertices[w] = true;
+                    if (!(markedVertices[w] == 1)) {
+                        markedVertices[w] = 1;
                         queue.add(w);
                         discovered.add(w);
+                        parents[w] = v;
+                        levels[w] = currentLevel + 1;
                     }
                 }
-                System.out.print("\n");
+
+                currentLevel++;
             }
         }
 
@@ -287,23 +300,36 @@ public class GraphAnalysis {
         for(int vertex : explored) {
             System.out.print(vertex + " ");
         }
+
+        HashMap<String, int[]> treeInfo = new HashMap<String, int[]>();
+        treeInfo.put("parents", parents);
+        treeInfo.put("levels", levels);
+        treeInfo.put("markedVertices", markedVertices);
+        return treeInfo;
     }
 
-    private static void DFS(AdjacentList graphAdjList, AdjacentMatrix graphAdjMatrix, int s) {
-        boolean markedVertices[];
+    private static HashMap<String, int[]> DFS(AdjacentList graphAdjList, AdjacentMatrix graphAdjMatrix, int s) {
+        int markedVertices[];
+        int parents[];
+        int levels[];
+        int currentLevel = 0;
         ArrayList<Integer> stack = new ArrayList<Integer>();
         ArrayList<Integer> stacked = new ArrayList<Integer>();
         ArrayList<Integer> marked = new ArrayList<Integer>();
-        System.out.println("SDHGFÇFJSJGHSAJFHG");
+
         stack.add(s);
         stacked.add(s);
+
         if(graphAdjMatrix != null) {
-           markedVertices = new boolean[graphAdjMatrix.Graph.length + 1];
+           markedVertices = new int[graphAdjMatrix.Graph.length + 1];
+           parents = new int[graphAdjMatrix.Graph.length + 1];
+           levels = new int[graphAdjMatrix.Graph.length + 1];
+
             while(!stack.isEmpty()) {
                 int u = stack.get(stack.size() - 1);
                 stack.remove(stack.size() - 1);
-                if(!markedVertices[u]) {
-                    markedVertices[u] = true;
+                if(!(markedVertices[u] == 1)) {
+                    markedVertices[u] = 1;
                     marked.add(u);
                     for (int v = graphAdjMatrix.Graph[u].length - 1; v >= 0; v--) {
                         if(graphAdjMatrix.Graph[u][v] == 1){
@@ -312,16 +338,23 @@ public class GraphAnalysis {
                         }
                     }
                 }
+
+                int nextVertex = stack.get(stack.size() - 1);
+                parents[nextVertex] = u;
+                levels[nextVertex] = currentLevel + 1;
+                currentLevel++;
             }
         } else {
-            System.out.println("SDHGFÇFJSJGHSAJFHG");
-            markedVertices = new boolean[graphAdjList.Graph.length + 1];
+            markedVertices = new int[graphAdjList.Graph.length + 1];
+            parents = new int[graphAdjList.Graph.length + 1];
+            levels = new int[graphAdjList.Graph.length + 1];
+
             while(!stack.isEmpty()) {
                 int u = stack.get(stack.size() - 1);
                 stack.remove(stack.size() - 1);
-                System.out.println("SDHGFÇFJSJGHSAJFHG");
-                if(!markedVertices[u]) {
-                    markedVertices[u] = true;
+
+                if(!(markedVertices[u] == 1)) {
+                    markedVertices[u] = 1;
                     marked.add(u);
                     Comparator<Integer> order = Integer::compare;
                     graphAdjList.Graph[u].sort(order.reversed());
@@ -330,6 +363,11 @@ public class GraphAnalysis {
                         stacked.add(v);
                     }
                 }
+
+                int nextVertex = stack.get(stack.size() - 1);
+                parents[nextVertex] = u;
+                levels[nextVertex] = currentLevel + 1;
+                currentLevel++;
             }
         }
         
@@ -342,6 +380,39 @@ public class GraphAnalysis {
         System.out.println("\nVértices marcados:");
         for(int vertex : marked) {
             System.out.print(vertex + " ");
+        }
+
+        parents[s] = -1;
+        HashMap<String, int[]> treeInfo = new HashMap<String, int[]>();
+        treeInfo.put("parents", parents);
+        treeInfo.put("levels", levels);
+        treeInfo.put("markedVertices", markedVertices);
+        return treeInfo;
+    }
+
+    private static void BuildSearchTree(AdjacentList graphAdjList, AdjacentMatrix graphAdjMatrix, int root, String typeOfSearch) {
+        HashMap<String, int[]> treeInfo = new HashMap<String, int[]>();
+        if(typeOfSearch == "BFS"){
+            treeInfo = BFS(graphAdjList, graphAdjMatrix, root);
+        } else {
+            treeInfo = DFS(graphAdjList, graphAdjMatrix, root);
+        }
+
+        String filePath = CreateOutputFile("SearchTreeInfo");
+
+        SaveSearchTreeOutput(treeInfo, filePath);
+    }
+
+    private static void SaveSearchTreeOutput(HashMap<String, int[]> treeInfo, String outputFilePath) {
+        try {
+            FileWriter fileWriter = new FileWriter(outputFilePath);
+            for (int i = 0; i < treeInfo.get("parents").length; i++) {
+                fileWriter.write("Vértice: " + i + ", pai: " + treeInfo.get("parents")[i] + ", nível na árvore de busca: " + treeInfo.get("levels")[i] + "\n");
+            }
+            fileWriter.close();
+        } catch (IOException e) {
+            System.out.println("Erro.");
+            e.printStackTrace();
         }
     }
 }
