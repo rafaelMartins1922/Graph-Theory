@@ -27,28 +27,41 @@ public class GraphAnalysis {
        AnalyseGraph(null, null);
     }
 
+    private static HashMap<String, String> GetInitialInfoFromUser() {
+        Scanner consoleScanner = new Scanner(System.in);
+        String inputFile = GetFileFromUser(consoleScanner);
+        System.out.println("Grafo a ser analisado: " + inputFile);
+        String representationType = GetFileRepresentation(consoleScanner);
+        System.out.println("Analisando " + inputFile + " como " + representationType + "......");
+        
+        HashMap<String, String> initialInfo = new HashMap<>();
+        initialInfo.put("RepresentationType", representationType);
+        initialInfo.put("InputFile", inputFile);
+        consoleScanner.close();
+        return initialInfo;
+    }
+
     private static void AnalyseGraph(String inputFile, String representationType) {
         if(inputFile == null && representationType == null) {
-            Scanner consoleScanner = new Scanner(System.in);
-            inputFile = GetFileFromUser(consoleScanner);
-            System.out.println("Grafo a ser analisado: " + inputFile);
-            representationType = GetFileRepresentation(consoleScanner);
-            System.out.println("Analisando " + inputFile + " como " + representationType + "......");
+            HashMap<String, String> initialInfo = GetInitialInfoFromUser();
+            representationType = initialInfo.get("RepresetationType");
+            inputFile = initialInfo.get("InputFile");
         }
         
-        GraphData graphData = SetGraphData(inputFile);
         String outputFilePath = CreateOutputFile("output");
 
+        AdjacentMatrix graphAdjMatrix = null;
+        AdjacentList graphAdjList = null;
         switch (representationType) {
             case "AdjacentMatrix":
-                AdjacentMatrix graphAdjMatrix = new AdjacentMatrix(graphData);
+                graphAdjMatrix = new AdjacentMatrix(SetGraphData(inputFile));
                 // PrintAdjMatrix(graphAdjMatrix);
                 //SaveAdjMatrixOutput(graphAdjMatrix, outputFilePath);
-                BuildSearchTree(null, graphAdjMatrix, 1, "DFS");
+                // BuildSearchTree(null, graphAdjMatrix, 1, "DFS");
                 SaveConnectedComponentInfo(null, graphAdjMatrix);
                 break;
             case "AdjacentList":
-                AdjacentList graphAdjList = new AdjacentList(graphData);
+                graphAdjList = new AdjacentList(SetGraphData(inputFile));
                 //PrintAdjList(graphAdjList);
                 //SaveAdjListOutput(graphAdjList, outputFilePath);
                 // BuildSearchTree(graphAdjList, null, 1, "DFS");
@@ -109,13 +122,13 @@ public class GraphAnalysis {
         }
     }
 
-    private static void PrintAdjList(AdjacentList graph) {
+    public static void PrintAdjList(AdjacentList graph) {
         for (int i = 0; i < graph.Graph.length ; i++) {
             if(graph.Graph[i] != null){
                 System.out.print( i + " -> ");
                 for (var next : graph.Graph[i]) System.out.print(" " + next);
-                System.out.println();
             }
+            System.out.println("");
         }
 
         System.out.println("Grau máximo:" + graph.maxDegree);
@@ -125,7 +138,7 @@ public class GraphAnalysis {
         System.out.println("Número de arestas:" + graph.numberOfEdges);
     };
 
-    private static void PrintAdjMatrix(AdjacentMatrix graph) {
+    public static void PrintAdjMatrix(AdjacentMatrix graph) {
         for (int i = 0; i < graph.Graph.length; i++) {
             System.out.print( i + " -> ");
             for (int j = 0; j < graph.Graph.length; j++) {
@@ -156,7 +169,7 @@ public class GraphAnalysis {
         return GraphsRepresentations.values()[consoleScanner.nextInt()].toString();
     }
 
-    private static GraphData SetGraphData(String graphFile) {
+    public static GraphData SetGraphData(String graphFile) {
         GraphData graphData = new GraphData();
         HashMap<Integer, Integer> graphDegreesHash = new HashMap<Integer, Integer>();
 
@@ -168,7 +181,9 @@ public class GraphAnalysis {
                 graphData.Edges = new ArrayList<>();
                 graphData.Vertices = new ArrayList<>();
                 graphData.MaxVertex = 0;
+                int i = 0;
                 while (fileScanner.hasNextInt()) {
+                    i++;
                     int Node1 = fileScanner.nextInt();
                     int Node2 = fileScanner.nextInt();
                     Edge edge = new Edge();
@@ -199,22 +214,22 @@ public class GraphAnalysis {
 
                 ArrayList<Integer> graphDegreesList = new ArrayList<Integer>(graphDegreesHash.values());
                 Collections.sort(graphDegreesList);
-                System.out.println("Graus do grafo:");
+                //System.out.println("Graus do grafo:");
 
-                int countDeg = 0;
+                // int countDeg = 0;
                 
-                //imprime lista ordenada de graus do grafo
-                // for(int deg : graphDegreesList) {
+                // //imprime lista ordenada de graus do grafo
+                // // for(int deg : graphDegreesList) {
+                // //     countDeg++;
+                // //     System.out.println(countDeg + "->" + deg);
+                // // }
+
+                // countDeg = 0;
+
+                // for(int vert : graphDegreesHash.keySet()) {
                 //     countDeg++;
-                //     System.out.println(countDeg + "->" + deg);
+                //     System.out.println(countDeg + "-> vértice " + vert + ": "+ graphDegreesHash.get(vert));
                 // }
-
-                countDeg = 0;
-
-                for(int vert : graphDegreesHash.keySet()) {
-                    countDeg++;
-                    System.out.println(countDeg + "-> vértice " + vert + ": "+ graphDegreesHash.get(vert));
-                }
 
 
                 if(graphDegreesList.size() % 2 == 0) {
@@ -232,7 +247,7 @@ public class GraphAnalysis {
         return graphData;
     }
 
-    private static HashMap<String, int[]> BFS(AdjacentList graphAdjList, AdjacentMatrix graphAdjMatrix, int s) {
+    public static HashMap<String, int[]> BFS(AdjacentList graphAdjList, AdjacentMatrix graphAdjMatrix, int s) {
         int markedVertices[];
         int[] parents;
         int[] levels;
@@ -289,15 +304,15 @@ public class GraphAnalysis {
             }
         }
 
-        System.out.println("Vértices descobertos:");
-        for(int vertex : discovered) {
-            System.out.print(vertex + " ");
-        }
+        // System.out.println("Vértices descobertos:");
+        // for(int vertex : discovered) {
+        //     System.out.print(vertex + " ");
+        // }
 
-        System.out.println("\nVértices explorados:\n");
-        for(int vertex : explored) {
-            System.out.print(vertex + " ");
-        }
+        // System.out.println("\nVértices explorados:\n");
+        // for(int vertex : explored) {
+        //     System.out.print(vertex + " ");
+        // }
 
         parents[s] = -1;
         HashMap<String, int[]> treeInfo = new HashMap<String, int[]>();
@@ -307,7 +322,7 @@ public class GraphAnalysis {
         return treeInfo;
     }
 
-    private static HashMap<String, int[]> DFS(AdjacentList graphAdjList, AdjacentMatrix graphAdjMatrix, int s) {
+    public static HashMap<String, int[]> DFS(AdjacentList graphAdjList, AdjacentMatrix graphAdjMatrix, int s) {
         int markedVertices[];
         int parents[];
         int levels[];
@@ -369,15 +384,15 @@ public class GraphAnalysis {
         }
         
 
-        System.out.println("Vértices na pilha:");
-        for(int vertex : stacked) {
-            System.out.print(vertex + " ");
-        }
+        // System.out.println("Vértices na pilha:");
+        // for(int vertex : stacked) {
+        //     System.out.print(vertex + " ");
+        // }
 
-        System.out.println("\nVértices marcados:");
-        for(int vertex : marked) {
-            System.out.print(vertex + " ");
-        }
+        // System.out.println("\nVértices marcados:");
+        // for(int vertex : marked) {
+        //     System.out.print(vertex + " ");
+        // }
 
         parents[s] = -1;
         HashMap<String, int[]> treeInfo = new HashMap<String, int[]>();
