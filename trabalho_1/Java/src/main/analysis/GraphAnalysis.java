@@ -58,7 +58,6 @@ public class GraphAnalysis {
                 // PrintAdjMatrix(graphAdjMatrix);
                 //SaveAdjMatrixOutput(graphAdjMatrix, outputFilePath);
                 // BuildSearchTree(null, graphAdjMatrix, 1, "DFS");
-                SaveConnectedComponentInfo(null, graphAdjMatrix);
                 break;
             case "AdjacentList":
                 graphAdjList = new AdjacentList(SetGraphData(inputFile));
@@ -66,13 +65,12 @@ public class GraphAnalysis {
                 //SaveAdjListOutput(graphAdjList, outputFilePath);
                 // BuildSearchTree(graphAdjList, null, 1, "DFS");
                 //DFS(graphAdjList, null, 1);
-                SaveConnectedComponentInfo(graphAdjList, null);
                 break;
          }
         
     }
 
-    private static String CreateOutputFile(String filename) {
+    public static String CreateOutputFile(String filename) {
         String filePath = Paths.get("").toAbsolutePath().toString() + "/output_files/" + filename + ".txt";
         try {
             
@@ -314,7 +312,6 @@ public class GraphAnalysis {
         //     System.out.print(vertex + " ");
         // }
 
-        parents[s] = -1;
         HashMap<String, int[]> treeInfo = new HashMap<String, int[]>();
         treeInfo.put("parents", parents);
         treeInfo.put("levels", levels);
@@ -394,7 +391,6 @@ public class GraphAnalysis {
         //     System.out.print(vertex + " ");
         // }
 
-        parents[s] = -1;
         HashMap<String, int[]> treeInfo = new HashMap<String, int[]>();
         treeInfo.put("parents", parents);
         treeInfo.put("levels", levels);
@@ -429,7 +425,7 @@ public class GraphAnalysis {
         }
     }
 
-    private static ArrayList<ArrayList<Integer>> GetConnectedComponents(AdjacentList graphAdjList, AdjacentMatrix graphAdjMatrix) {
+    public static ArrayList<ArrayList<Integer>> GetConnectedComponents(AdjacentList graphAdjList, AdjacentMatrix graphAdjMatrix) {
         ArrayList<ArrayList<Integer>> connectedComponents = new ArrayList<ArrayList<Integer>>();
         ArrayList<Integer> unexploredVertices;
 
@@ -458,9 +454,9 @@ public class GraphAnalysis {
         return connectedComponents;
     }
 
-    private static void SaveConnectedComponentInfo(AdjacentList graphAdjList, AdjacentMatrix graphAdjMatrix) {
+    public static void SaveConnectedComponentInfo(AdjacentList graphAdjList, AdjacentMatrix graphAdjMatrix, String outputFileName) {
         ArrayList<ArrayList<Integer>> connectedComponents = GetConnectedComponents(graphAdjList, graphAdjMatrix);
-        String outputFilePath = CreateOutputFile("connected_components_info");
+        String outputFilePath = CreateOutputFile(outputFileName);
         
         Collections.sort(connectedComponents, new Comparator<ArrayList<Integer>>(){
             public int compare(ArrayList<Integer> a1, ArrayList<Integer> a2) {
@@ -472,6 +468,8 @@ public class GraphAnalysis {
             FileWriter fileWriter = new FileWriter(outputFilePath);
             fileWriter.write("Número de componentes conexas do grafo: " + connectedComponents.size()+ "\n");
             fileWriter.write("Dados das componentes (em ordem decrescente de tamanho): \n");
+            fileWriter.write("Tamanho da maior componente conexa:" + connectedComponents.get(0).size() +"\n");
+            fileWriter.write("Tamanho da menor componente conexa:" + connectedComponents.get(connectedComponents.size() - 1).size() +"\n");
             int i = 1;
             for(ArrayList<Integer> component : connectedComponents) {
                 fileWriter.write("Componente "+ i + ":\n");
