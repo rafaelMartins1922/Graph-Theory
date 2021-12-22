@@ -1,0 +1,55 @@
+Pai do nó 10 do grafo 1 na BFS iniciada pelo nó 1: 82
+Pai do nó 20 do grafo 1 na BFS iniciada pelo nó 1: 22
+Pai do nó 30 do grafo 1 na BFS iniciada pelo nó 1: 52
+Pai do nó 10 do grafo 1 na BFS iniciada pelo nó 2: 9
+Pai do nó 20 do grafo 1 na BFS iniciada pelo nó 2: 55
+Pai do nó 30 do grafo 1 na BFS iniciada pelo nó 2: 62
+Pai do nó 10 do grafo 1 na BFS iniciada pelo nó 3: 83
+Pai do nó 20 do grafo 1 na BFS iniciada pelo nó 3: 22
+Pai do nó 30 do grafo 1 na BFS iniciada pelo nó 3: 39
+Pai do nó 10 do grafo 2 na BFS iniciada pelo nó 1: 775
+Pai do nó 20 do grafo 2 na BFS iniciada pelo nó 1: 0 (Vértice sem pai - parte de outra componente conexa)
+Pai do nó 30 do grafo 2 na BFS iniciada pelo nó 1: 0 (Vértice sem pai - parte de outra componente conexa)
+Pai do nó 10 do grafo 2 na BFS iniciada pelo nó 2: 47
+Pai do nó 20 do grafo 2 na BFS iniciada pelo nó 2: 0 (Vértice sem pai - parte de outra componente conexa)
+Pai do nó 30 do grafo 2 na BFS iniciada pelo nó 2: 0 (Vértice sem pai - parte de outra componente conexa)
+Pai do nó 10 do grafo 2 na BFS iniciada pelo nó 3: 47
+Pai do nó 20 do grafo 2 na BFS iniciada pelo nó 3: 0 (Vértice sem pai - parte de outra componente conexa)
+Pai do nó 30 do grafo 2 na BFS iniciada pelo nó 3: 0 (Vértice sem pai - parte de outra componente conexa)
+Pai do nó 10 do grafo 3 na BFS iniciada pelo nó 1: 0 (Vértice sem pai - parte de outra componente conexa)
+Pai do nó 20 do grafo 3 na BFS iniciada pelo nó 1: 0 (Vértice sem pai - parte de outra componente conexa)
+Pai do nó 30 do grafo 3 na BFS iniciada pelo nó 1: 0 (Vértice sem pai - parte de outra componente conexa)
+Pai do nó 10 do grafo 3 na BFS iniciada pelo nó 2: 0 (Vértice sem pai - parte de outra componente conexa)
+Pai do nó 20 do grafo 3 na BFS iniciada pelo nó 2: 0 (Vértice sem pai - parte de outra componente conexa)
+Pai do nó 30 do grafo 3 na BFS iniciada pelo nó 2: 0 (Vértice sem pai - parte de outra componente conexa)
+Pai do nó 10 do grafo 3 na BFS iniciada pelo nó 3: 1389
+Pai do nó 20 do grafo 3 na BFS iniciada pelo nó 3: 0 (Vértice sem pai - parte de outra componente conexa)
+Pai do nó 30 do grafo 3 na BFS iniciada pelo nó 3: 7250
+
+Pai do nó 10 do grafo 1 na DFS iniciada pelo nó 1: 9
+Pai do nó 20 do grafo 1 na DFS iniciada pelo nó 1: 10
+Pai do nó 30 do grafo 1 na DFS iniciada pelo nó 1: 39
+Pai do nó 10 do grafo 1 na DFS iniciada pelo nó 2: 9
+Pai do nó 20 do grafo 1 na DFS iniciada pelo nó 2: 10
+Pai do nó 30 do grafo 1 na DFS iniciada pelo nó 2: 39
+Pai do nó 10 do grafo 1 na DFS iniciada pelo nó 3: 9
+Pai do nó 20 do grafo 1 na DFS iniciada pelo nó 3: 10
+Pai do nó 30 do grafo 1 na DFS iniciada pelo nó 3: 61
+Pai do nó 10 do grafo 2 na DFS iniciada pelo nó 1: 15
+Pai do nó 20 do grafo 2 na DFS iniciada pelo nó 1: 0 (Vértice sem pai - parte de outra componente conexa)
+Pai do nó 30 do grafo 2 na DFS iniciada pelo nó 1: 0 (Vértice sem pai - parte de outra componente conexa)
+Pai do nó 10 do grafo 2 na DFS iniciada pelo nó 2: 34
+Pai do nó 20 do grafo 2 na DFS iniciada pelo nó 2: 0 (Vértice sem pai - parte de outra componente conexa)
+Pai do nó 30 do grafo 2 na DFS iniciada pelo nó 2: 0 (Vértice sem pai - parte de outra componente conexa)
+Pai do nó 10 do grafo 2 na DFS iniciada pelo nó 3: 61
+Pai do nó 20 do grafo 2 na DFS iniciada pelo nó 3: 0 (Vértice sem pai - parte de outra componente conexa)
+Pai do nó 30 do grafo 2 na DFS iniciada pelo nó 3: 0 (Vértice sem pai - parte de outra componente conexa)
+Pai do nó 10 do grafo 3 na DFS iniciada pelo nó 1: 0 (Vértice sem pai - parte de outra componente conexa)
+Pai do nó 20 do grafo 3 na DFS iniciada pelo nó 1: 0 (Vértice sem pai - parte de outra componente conexa)
+Pai do nó 30 do grafo 3 na DFS iniciada pelo nó 1: 0 (Vértice sem pai - parte de outra componente conexa)
+Pai do nó 10 do grafo 3 na DFS iniciada pelo nó 2: 0 (Vértice sem pai - parte de outra componente conexa)
+Pai do nó 20 do grafo 3 na DFS iniciada pelo nó 2: 0 (Vértice sem pai - parte de outra componente conexa)
+Pai do nó 30 do grafo 3 na DFS iniciada pelo nó 2: 0 (Vértice sem pai - parte de outra componente conexa)
+Pai do nó 10 do grafo 3 na DFS iniciada pelo nó 3: 30
+Pai do nó 20 do grafo 3 na DFS iniciada pelo nó 3: 0 (Vértice sem pai - parte de outra componente conexa)
+Pai do nó 30 do grafo 3 na DFS iniciada pelo nó 3: 107

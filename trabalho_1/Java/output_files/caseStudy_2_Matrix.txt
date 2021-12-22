@@ -1,0 +1,3 @@
+1000 buscas no grafo 1 179ms
+1000 buscas no grafo 2 2860ms
+1000 buscas no grafo 3: 329989ms
