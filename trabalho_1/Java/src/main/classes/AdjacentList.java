@@ -1,7 +1,6 @@
 package main.classes;
 
 import main.interfaces.IGraphRepresentation;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -15,7 +14,7 @@ public class AdjacentList implements IGraphRepresentation {
     public int minDegree;
     public int medianDegree;
 
-    public AdjacentList(@NotNull GraphData graphData) {
+    public AdjacentList(GraphData graphData) {
         numberOfEdges = graphData.Edges.size();
         numberOfVertices = graphData.Vertices.size();
         vertices = graphData.Vertices;
@@ -26,7 +25,7 @@ public class AdjacentList implements IGraphRepresentation {
         CreateGraph(graphData);
     }
 
-    private void CreateGraph(@NotNull GraphData graphData) {
+    private void CreateGraph(GraphData graphData) {
         this.Graph = new LinkedList[graphData.MaxVertex + 1];
 
         for (var vertex: graphData.Vertices)

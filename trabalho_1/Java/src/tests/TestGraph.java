@@ -5,8 +5,6 @@ import java.util.HashMap;
 import java.util.Random;
 import java.util.Scanner;
 
-import org.junit.Test;
-
 import main.analysis.GraphAnalysis;
 import main.classes.AdjacentList;
 import main.classes.AdjacentMatrix;
@@ -14,15 +12,35 @@ import java.io.FileWriter;
 import java.io.IOException;
 public class TestGraph {
     public static void main(String[] args) {
-        testGraph();
+        testGraph(); //função de testes
     }
 
-    @Test
-    static void testGraph(){
-        caseStudy_6();
+    public static void testGraph(){
+        analyseGraphFromCommandLine();//chame outras funções aqui
     }
 
-    static void caseStudy_1() {
+    //Teste para ler grafo selecionado pela linha de comando e imprimir algumas informações dele em um arquivo
+    public static void analyseGraphFromCommandLine() {
+       HashMap<String, String> initialInfo = GraphAnalysis.GetInitialInfoFromUser();
+       String inputFileName = initialInfo.get("InputFile");
+       String representationType = initialInfo.get("RepresentationType");
+       String outputFilePath = GraphAnalysis.CreateOutputFile("dados_grafo_cmd");
+
+       AdjacentList graphAdjList = null; 
+       AdjacentMatrix graphAdjMatrix = null; 
+       if(representationType == "AdjacentList") {
+        graphAdjList = new AdjacentList(GraphAnalysis.SetGraphData(inputFileName+".txt"));
+        GraphAnalysis.SaveAdjListOutput(graphAdjList, outputFilePath);
+       } else {
+        graphAdjMatrix = new AdjacentMatrix(GraphAnalysis.SetGraphData(inputFileName+".txt"));
+        GraphAnalysis.SaveAdjMatrixOutput(graphAdjMatrix, outputFilePath);
+    }
+
+    }
+
+    //------------- FUNÇÕES DOS ESTUDOS DE CASO ----------------
+
+    public static void caseStudy_1() {
         Scanner consoleScanner = new Scanner(System.in);
         for (int i = 1; i <=3; i++) {
             readAdjMatrix(i);
@@ -33,21 +51,21 @@ public class TestGraph {
         }
     }
 
-    static void caseStudy_2() {
+    public static void caseStudy_2() {
         String outputFilePath = GraphAnalysis.CreateOutputFile("caseStudy_2_list");
         BFS1000List(outputFilePath);
         outputFilePath = GraphAnalysis.CreateOutputFile("caseStudy_2_Matrix");
         BFS1000Matrix(outputFilePath);
     }
 
-    static void caseStudy_3() {
+    public static void caseStudy_3() {
         String outputFilePath = GraphAnalysis.CreateOutputFile("caseStudy_3_list");
         DFS1000List(outputFilePath);
         outputFilePath = GraphAnalysis.CreateOutputFile("caseStudy_3_Matrix");
         DFS1000Matrix(outputFilePath);
     }
 
-    static void caseStudy_4() {
+    public static void caseStudy_4() {
         try {
             String outputFilePath = GraphAnalysis.CreateOutputFile("caseStudy_4");
             FileWriter fileWriter = new FileWriter(outputFilePath);
@@ -101,7 +119,7 @@ public class TestGraph {
         
     }   
 
-    static void caseStudy_5() {
+    public static void caseStudy_5() {
         try {
             String outputFilePath = GraphAnalysis.CreateOutputFile("caseStudy_5");
             FileWriter fileWriter = new FileWriter(outputFilePath);
@@ -124,7 +142,7 @@ public class TestGraph {
         }
     }
 
-    static void caseStudy_6() {
+    public static void caseStudy_6() {
         for (int i = 1; i <= 3; i++) {
             String inputFileName = "grafo_" + i + ".txt";
             AdjacentList graph = new AdjacentList(GraphAnalysis.SetGraphData(inputFileName));
@@ -133,33 +151,26 @@ public class TestGraph {
         }
     }
 
-    static AdjacentList readAdjList(int number) {
+    // -----------------------------------------------------------------
+
+    //Cria uma lista de adjacência a partir de um arquivo .txt, com base na função SetGraphData da classe GraphAnalysis
+    public static AdjacentList readAdjList(int number) {
         
         String inputFile = "grafo_" + number + ".txt";
         AdjacentList graphAdjList = new AdjacentList(GraphAnalysis.SetGraphData(inputFile));
-        Runtime.getRuntime().gc();
-        try {
-            Thread.sleep(30 * 1000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
         return graphAdjList;
     }
 
-    static AdjacentMatrix readAdjMatrix(int number) {
+    //Cria uma matriz de adjacência a partir de um arquivo .txt, com base na função SetGraphData da classe GraphAnalysis
+    public static AdjacentMatrix readAdjMatrix(int number) {
         String inputFile = "grafo_" + number + ".txt";
         AdjacentMatrix graphAdjMatrix = new AdjacentMatrix(GraphAnalysis.SetGraphData(inputFile));
         Runtime.getRuntime().gc();
-        System.out.println("Pausando");
-        try {
-            Thread.sleep(30 * 1000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
         return graphAdjMatrix;
     }
 
-    static void BFS1000List(String outputFilePath) {
+    // Executa 1000 buscas BFS em listas de adjacência dos grafos 1, 2 e 3
+    public static void BFS1000List(String outputFilePath) {
         try {
             FileWriter fileWriter = new FileWriter(outputFilePath);
             String inputFile = "grafo_1.txt";
@@ -212,7 +223,8 @@ public class TestGraph {
         }
     }
 
-    static void BFS1000Matrix(String outputFilePath) {
+    // Executa 1000 buscas BFS em matrizes de adjacência dos grafos 1, 2 e 3
+    public static void BFS1000Matrix(String outputFilePath) {
 
         try {
             FileWriter fileWriter = new FileWriter(outputFilePath);
@@ -266,7 +278,8 @@ public class TestGraph {
 
     }
 
-    static void DFS1000List(String outputFilePath) {
+    // Executa 1000 buscas DFS em listas de adjacência dos grafos 1, 2 e 3
+    public static void DFS1000List(String outputFilePath) {
 
         try {
             FileWriter fileWriter = new FileWriter(outputFilePath);
@@ -321,7 +334,8 @@ public class TestGraph {
 
     }
 
-    static void DFS1000Matrix(String outputFilePath) {
+    // Executa 1000 buscas DFS em matrizes de adjacência dos grafos 1, 2 e 3
+    public static void DFS1000Matrix(String outputFilePath) {
         try {
             FileWriter fileWriter = new FileWriter(outputFilePath);
             String inputFile = "grafo_1.txt";

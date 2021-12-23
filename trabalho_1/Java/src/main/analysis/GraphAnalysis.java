@@ -23,11 +23,8 @@ import java.util.LinkedList;
 import java.util.Scanner;
 
 public class GraphAnalysis {
-    public static void main(String[] args) {
-       AnalyseGraph(null, null);
-    }
-
-    private static HashMap<String, String> GetInitialInfoFromUser() {
+    // Lê o tipo de representação do grafo (matriz ou lista de adjacência) e o nome do arquivo do grafo da linha de comando
+    public static HashMap<String, String> GetInitialInfoFromUser() {
         Scanner consoleScanner = new Scanner(System.in);
         String inputFile = GetFileFromUser(consoleScanner);
         System.out.println("Grafo a ser analisado: " + inputFile);
@@ -41,35 +38,7 @@ public class GraphAnalysis {
         return initialInfo;
     }
 
-    private static void AnalyseGraph(String inputFile, String representationType) {
-        if(inputFile == null && representationType == null) {
-            HashMap<String, String> initialInfo = GetInitialInfoFromUser();
-            representationType = initialInfo.get("RepresetationType");
-            inputFile = initialInfo.get("InputFile");
-        }
-        
-        String outputFilePath = CreateOutputFile("output");
-
-        AdjacentMatrix graphAdjMatrix = null;
-        AdjacentList graphAdjList = null;
-        switch (representationType) {
-            case "AdjacentMatrix":
-                graphAdjMatrix = new AdjacentMatrix(SetGraphData(inputFile));
-                // PrintAdjMatrix(graphAdjMatrix);
-                //SaveAdjMatrixOutput(graphAdjMatrix, outputFilePath);
-                // BuildSearchTree(null, graphAdjMatrix, 1, "DFS");
-                break;
-            case "AdjacentList":
-                graphAdjList = new AdjacentList(SetGraphData(inputFile));
-                //PrintAdjList(graphAdjList);
-                //SaveAdjListOutput(graphAdjList, outputFilePath);
-                // BuildSearchTree(graphAdjList, null, 1, "DFS");
-                //DFS(graphAdjList, null, 1);
-                break;
-         }
-        
-    }
-
+    //Cria um arquivo de saída com o nome especificado, usada para salvar dados de buscas e análises dos grafos
     public static String CreateOutputFile(String filename) {
         String filePath = Paths.get("").toAbsolutePath().toString() + "/output_files/" + filename + ".txt";
         try {
@@ -90,7 +59,8 @@ public class GraphAnalysis {
         return filePath;
     }
 
-    private static void SaveAdjMatrixOutput(AdjacentMatrix graph,String outputFilePath) {
+    //Salva os dados de uma matriz de adjacência no arquivo criado através de CreateOutputFile
+    public static void SaveAdjMatrixOutput(AdjacentMatrix graph,String outputFilePath) {
         try {
             FileWriter fileWriter = new FileWriter(outputFilePath);
             fileWriter.write("Grau máximo:" + graph.maxDegree + "\n");
@@ -105,7 +75,8 @@ public class GraphAnalysis {
         }
     }
 
-    private static void SaveAdjListOutput(AdjacentList graph, String outputFilePath) {
+    //Salva os dados de uma lista de adjacência no arquivo criado através de CreateOutputFile
+    public static void SaveAdjListOutput(AdjacentList graph, String outputFilePath) {
         try {
             FileWriter fileWriter = new FileWriter(outputFilePath);
             fileWriter.write("Grau máximo:" + graph.maxDegree + "\n");
@@ -120,6 +91,7 @@ public class GraphAnalysis {
         }
     }
 
+    //imprime no consoe os uma lista de adjacência informada
     public static void PrintAdjList(AdjacentList graph) {
         for (int i = 0; i < graph.Graph.length ; i++) {
             if(graph.Graph[i] != null){
@@ -136,6 +108,7 @@ public class GraphAnalysis {
         System.out.println("Número de arestas:" + graph.numberOfEdges);
     };
 
+    //imprime no consoe os uma matriz de adjacência informada
     public static void PrintAdjMatrix(AdjacentMatrix graph) {
         for (int i = 0; i < graph.Graph.length; i++) {
             System.out.print( i + " -> ");
@@ -153,13 +126,15 @@ public class GraphAnalysis {
 
     };
 
-    private static String GetFileFromUser(Scanner consoleScanner) {
+    //Imprime no console as opções de grafos a serem escolhidas por um usuário
+    public static String GetFileFromUser(Scanner consoleScanner) {
         System.out.println("Escolha o numero do grafo a ser analisado:");
         for (int i = 0; i < 3; i++) System.out.println(" " + (i +1) + " para " + GraphFiles.fileNames[i]);
         return GraphFiles.fileNames[consoleScanner.nextInt() - 1];
     }
 
-    private static String GetFileRepresentation(Scanner consoleScanner) {
+    //Imprime no console as opççõs de representação (lista ou matriz de adjacência) de um grafo a ser lido
+    public static String GetFileRepresentation(Scanner consoleScanner) {
         System.out.println("Escolha o tipo de representação do grafo :");
         for (int i = 0; i < GraphsRepresentations.values().length; i++) {
             System.out.println(" " + i + " para " + GraphsRepresentations.values()[i]);
@@ -167,6 +142,7 @@ public class GraphAnalysis {
         return GraphsRepresentations.values()[consoleScanner.nextInt()].toString();
     }
 
+    //Lê o grafo a partir de um arquivo .txt
     public static GraphData SetGraphData(String graphFile) {
         GraphData graphData = new GraphData();
         HashMap<Integer, Integer> graphDegreesHash = new HashMap<Integer, Integer>();
@@ -189,7 +165,6 @@ public class GraphAnalysis {
                     edge.secondNode = Node2;
                     graphData.Edges.add(edge);
 
-                    // erradin
                     if(!graphData.Vertices.contains(Node1)){
                         graphData.Vertices.add(Node1);
                         graphDegreesHash.put(Node1, 1);
@@ -203,7 +178,6 @@ public class GraphAnalysis {
                     } else{
                         graphDegreesHash.put(Node2, graphDegreesHash.get(Node2)+1);
                     }
-                    //-----------
                     if(Node1 > graphData.MaxVertex) graphData.MaxVertex = Node1;
                     if(Node2 > graphData.MaxVertex) graphData.MaxVertex = Node2;  
                 }
@@ -212,23 +186,6 @@ public class GraphAnalysis {
 
                 ArrayList<Integer> graphDegreesList = new ArrayList<Integer>(graphDegreesHash.values());
                 Collections.sort(graphDegreesList);
-                //System.out.println("Graus do grafo:");
-
-                // int countDeg = 0;
-                
-                // //imprime lista ordenada de graus do grafo
-                // // for(int deg : graphDegreesList) {
-                // //     countDeg++;
-                // //     System.out.println(countDeg + "->" + deg);
-                // // }
-
-                // countDeg = 0;
-
-                // for(int vert : graphDegreesHash.keySet()) {
-                //     countDeg++;
-                //     System.out.println(countDeg + "-> vértice " + vert + ": "+ graphDegreesHash.get(vert));
-                // }
-
 
                 if(graphDegreesList.size() % 2 == 0) {
                     graphData.MedianDegree = (graphDegreesList.get(graphDegreesList.size()/2) + graphDegreesList.get(graphDegreesList.size()/2 - 1))/2;
@@ -302,16 +259,6 @@ public class GraphAnalysis {
             }
         }
 
-        // System.out.println("Vértices descobertos:");
-        // for(int vertex : discovered) {
-        //     System.out.print(vertex + " ");
-        // }
-
-        // System.out.println("\nVértices explorados:\n");
-        // for(int vertex : explored) {
-        //     System.out.print(vertex + " ");
-        // }
-
         HashMap<String, int[]> treeInfo = new HashMap<String, int[]>();
         treeInfo.put("parents", parents);
         treeInfo.put("levels", levels);
@@ -379,17 +326,6 @@ public class GraphAnalysis {
                 }
             }
         }
-        
-
-        // System.out.println("Vértices na pilha:");
-        // for(int vertex : stacked) {
-        //     System.out.print(vertex + " ");
-        // }
-
-        // System.out.println("\nVértices marcados:");
-        // for(int vertex : marked) {
-        //     System.out.print(vertex + " ");
-        // }
 
         HashMap<String, int[]> treeInfo = new HashMap<String, int[]>();
         treeInfo.put("parents", parents);
@@ -398,7 +334,8 @@ public class GraphAnalysis {
         return treeInfo;
     }
 
-    private static void BuildSearchTree(AdjacentList graphAdjList, AdjacentMatrix graphAdjMatrix, int root, String typeOfSearch) {
+    //Constrói uma árvore de busca, isto é, captura informações de níveis e pais de nós para árvores de busca geradas pela BFS e DFS
+    public static void BuildSearchTree(AdjacentList graphAdjList, AdjacentMatrix graphAdjMatrix, int root, String typeOfSearch) {
         HashMap<String, int[]> treeInfo = new HashMap<String, int[]>();
         if(typeOfSearch == "BFS"){
             treeInfo = BFS(graphAdjList, graphAdjMatrix, root);
@@ -411,7 +348,8 @@ public class GraphAnalysis {
         SaveSearchTreeOutput(treeInfo, filePath);
     }
 
-    private static void SaveSearchTreeOutput(HashMap<String, int[]> treeInfo, String outputFilePath) {
+    //Salva informações de árvores de busca em um arquivo .txt
+    public static void SaveSearchTreeOutput(HashMap<String, int[]> treeInfo, String outputFilePath) {
         try {
             FileWriter fileWriter = new FileWriter(outputFilePath);
             System.out.println(treeInfo.get("parents").length);
@@ -425,6 +363,7 @@ public class GraphAnalysis {
         }
     }
 
+    //Retorna a lista d ecomponentes conexas de um grafo
     public static ArrayList<ArrayList<Integer>> GetConnectedComponents(AdjacentList graphAdjList, AdjacentMatrix graphAdjMatrix) {
         ArrayList<ArrayList<Integer>> connectedComponents = new ArrayList<ArrayList<Integer>>();
         ArrayList<Integer> unexploredVertices;
@@ -454,6 +393,7 @@ public class GraphAnalysis {
         return connectedComponents;
     }
 
+    //Salva informações de componentes conexas de um grafo em um arquivo .txt
     public static void SaveConnectedComponentInfo(AdjacentList graphAdjList, AdjacentMatrix graphAdjMatrix, String outputFileName) {
         ArrayList<ArrayList<Integer>> connectedComponents = GetConnectedComponents(graphAdjList, graphAdjMatrix);
         String outputFilePath = CreateOutputFile(outputFileName);
@@ -488,10 +428,3 @@ public class GraphAnalysis {
         }
     }
 }
-
-// ArrayList<Integer> aaa = new ArrayList<>();
-//        aaa.add(0);
-//        aaa.add(12);
-//        System.out.println(aaa);
-//        aaa.remove(Integer.valueOf(12));
-//        System.out.println(aaa);

@@ -1,7 +1,6 @@
 package main.classes;
 
 import main.interfaces.IGraphRepresentation;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 
@@ -14,7 +13,7 @@ public class AdjacentMatrix implements IGraphRepresentation {
     public int minDegree;
     public int medianDegree;
 
-    public AdjacentMatrix(@NotNull GraphData graphData) {
+    public AdjacentMatrix(GraphData graphData) {
         numberOfEdges = graphData.Edges.size();
         numberOfVertices = graphData.Vertices.size();
         maxDegree = graphData.MaxDegree;
