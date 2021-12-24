@@ -30,4 +30,9 @@ public class AdjacentMatrix implements IGraphRepresentation {
             Graph[edge.secondNode][edge.firstNode] = 1;
         }
     }
+
+    @Override
+    public ArrayList<Integer> GetVertices() {
+        return vertices;
+    }
 }

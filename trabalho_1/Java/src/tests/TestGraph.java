@@ -151,6 +151,10 @@ public class TestGraph {
         }
     }
 
+    public static void caseStudy_7() {
+
+    }
+
     // -----------------------------------------------------------------
 
     //Cria uma lista de adjacência a partir de um arquivo .txt, com base na função SetGraphData da classe GraphAnalysis

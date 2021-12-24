@@ -393,6 +393,26 @@ public class GraphAnalysis {
         return connectedComponents;
     }
 
+    //Pega o diâmetro do grafo
+    public static int GetGraphDiameter(IGraphRepresentation graph){
+        int graphDiameter = 0;
+        if(graph.getClass().toString() == GraphsRepresentations.AdjacentList.toString()){
+            for (var vertex : graph.GetVertices()) {
+                var searchResult =  BFS((AdjacentList) graph,null,vertex);
+                int levelsTotal = searchResult.get("levels").length;
+                if (levelsTotal > graphDiameter) graphDiameter = levelsTotal;
+            }
+        }
+        if(graph.getClass().toString() == GraphsRepresentations.AdjacentMatrix.toString()){
+            for (var vertex : graph.GetVertices()) {
+                var searchResult =  BFS(null,(AdjacentMatrix) graph,vertex);
+                int levelsTotal = searchResult.get("levels").length;
+                if (levelsTotal > graphDiameter) graphDiameter = levelsTotal;
+            }
+        }
+        return graphDiameter;
+    }
+
     //Salva informações de componentes conexas de um grafo em um arquivo .txt
     public static void SaveConnectedComponentInfo(AdjacentList graphAdjList, AdjacentMatrix graphAdjMatrix, String outputFileName) {
         ArrayList<ArrayList<Integer>> connectedComponents = GetConnectedComponents(graphAdjList, graphAdjMatrix);

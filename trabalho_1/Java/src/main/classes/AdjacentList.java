@@ -36,4 +36,9 @@ public class AdjacentList implements IGraphRepresentation {
             Graph[edge.secondNode].add(edge.firstNode);
         }
     }
+
+    @Override
+    public ArrayList<Integer> GetVertices() {
+        return vertices;
+    }
 }
