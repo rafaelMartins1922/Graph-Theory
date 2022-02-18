@@ -20,6 +20,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.LinkedList;
+import java.util.PriorityQueue;
 import java.util.Scanner;
 
 public class GraphAnalysis {
@@ -150,19 +151,38 @@ public class GraphAnalysis {
             try {
                 File file = new File(Paths.get("").toAbsolutePath().toString() + "/input_files/" + graphFile);
                 Scanner fileScanner = new Scanner(file);
-
+                
                 graphData.NumberOfVertices = fileScanner.nextInt();
                 graphData.Edges = new ArrayList<>();
                 graphData.Vertices = new ArrayList<>();
                 graphData.MaxVertex = 0;
+                fileScanner.nextLine();
                 int i = 0;
-                while (fileScanner.hasNextInt()) {
+                while (fileScanner.hasNextLine()) {
                     i++;
-                    int Node1 = fileScanner.nextInt();
-                    int Node2 = fileScanner.nextInt();
+                    
+                    String line = fileScanner.nextLine();
+                    String[] splitLine = line.split(" ");
+
+                    int Node1 = Integer.parseInt(splitLine[0]);
+                    int Node2 = Integer.parseInt(splitLine[1]);
+                    float Weight;
+
+                    if(splitLine.length == 2) {
+                        graphData.hasWeights = false;
+                        Weight = 1;
+                    } else {
+                        graphData.hasWeights = true;
+                        Weight = Float.parseFloat(splitLine[2]);
+                    }
+
+                    if(Weight < 0) {
+                        graphData.hasNegativeWeights = true;
+                    }
                     Edge edge = new Edge();
                     edge.firstNode = Node1;
                     edge.secondNode = Node2;
+                    edge.weight = Weight;
                     graphData.Edges.add(edge);
 
                     if(!graphData.Vertices.contains(Node1)){
@@ -182,19 +202,6 @@ public class GraphAnalysis {
                     if(Node2 > graphData.MaxVertex) graphData.MaxVertex = Node2;  
                 }
 
-                graphData.AverageDegree = 2*graphData.Edges.size()/graphData.Vertices.size();
-
-                ArrayList<Integer> graphDegreesList = new ArrayList<Integer>(graphDegreesHash.values());
-                Collections.sort(graphDegreesList);
-
-                if(graphDegreesList.size() % 2 == 0) {
-                    graphData.MedianDegree = (graphDegreesList.get(graphDegreesList.size()/2) + graphDegreesList.get(graphDegreesList.size()/2 - 1))/2;
-                } else {
-                    graphData.MedianDegree = graphDegreesList.get(graphDegreesList.size()/2);
-                }
-
-                graphData.MaxDegree = graphDegreesList.get(graphDegreesList.size() - 1 );
-                graphData.MinDegree = graphDegreesList.get(0);
                 fileScanner.close();
         } catch (FileNotFoundException e) {
             e.printStackTrace();
@@ -240,11 +247,9 @@ public class GraphAnalysis {
             levels = new int[graphAdjList.Graph.length];
             
             while(!queue.isEmpty()) {
-                Comparator<Integer> order = Integer::compare;
                 int v = queue.poll();
 
                 explored.add(v);
-                graphAdjList.Graph[v].sort(order);
 
                 for (Integer w : graphAdjList.Graph[v]) {
                     if (!(markedVertices[w] == 1)) {
@@ -363,7 +368,7 @@ public class GraphAnalysis {
         }
     }
 
-    //Retorna a lista d ecomponentes conexas de um grafo
+    //Retorna a lista de componentes conexas de um grafo
     public static ArrayList<ArrayList<Integer>> GetConnectedComponents(AdjacentList graphAdjList, AdjacentMatrix graphAdjMatrix) {
         ArrayList<ArrayList<Integer>> connectedComponents = new ArrayList<ArrayList<Integer>>();
         ArrayList<Integer> unexploredVertices;
@@ -447,4 +452,255 @@ public class GraphAnalysis {
             e.printStackTrace();
         }
     }
+
+    public static float getWeight(AdjacentList graphAdjList, AdjacentMatrix graphAdjMatrix, Integer i, Integer j) {
+        if(graphAdjMatrix != null) {
+            float weight =  graphAdjMatrix.Weights[i][j];
+            if(weight == 0) return Float.MAX_VALUE/2 -10;
+            else return weight;
+        } else {
+            if(graphAdjList.Weights.get(i).get(j) == null) return Float.MAX_VALUE/2 -10;
+            else return graphAdjList.Weights.get(i).get(j);
+        }
+    }
+
+    public static HashMap<String, float[]> Dijkstra(AdjacentList graphAdjList, AdjacentMatrix graphAdjMatrix, Integer s){
+        float infinite = Float.MAX_VALUE;
+        
+        if(graphAdjMatrix != null){
+            float dist[] = new float[graphAdjMatrix.Graph.length];
+            boolean[] isInS = new boolean[graphAdjMatrix.Graph.length];
+            float parents[] = new float[graphAdjList.Graph.length];
+
+            Comparator<Integer> comparator = new Comparator<Integer>() {
+                public int compare(Integer v1, Integer v2) {
+                    if(dist[v1] > dist[v2])
+                        return 1;
+                    else if(dist[v1] < dist[v2])
+                        return -1;
+                    return 0;
+                }
+            };
+            
+            PriorityQueue<Integer> heap = new PriorityQueue<Integer>(comparator);
+
+            for (int v = 1; v < graphAdjMatrix.Graph.length; v++) {
+                dist[v] = infinite;
+                heap.add(v);
+            }
+
+            dist[s] = 0;
+            parents[s] = 0;
+
+            heap.remove(s);
+            heap.add(s);
+
+            while(heap.size() != 0) {
+                Integer u = heap.poll();
+                
+                isInS[u] = true;
+                for (int v = 1; v < graphAdjMatrix.Graph.length; v++){
+                    if( graphAdjMatrix.Graph[u][v] == 1 && !isInS[v]){
+                        float weight = getWeight(null, graphAdjMatrix, u, v);
+                        if(dist[v] > dist[u] + weight) {
+                            dist[v] = dist[u] + weight;
+                            heap.remove(v);
+                            heap.add(v);
+                            parents[v] = u;
+                        }
+                    }
+                }
+            }
+            
+            HashMap<String, float[]> dijkstraInfo = new HashMap<String, float[]>();
+            dijkstraInfo.put("distances", dist);
+            dijkstraInfo.put("parents", parents);
+            return dijkstraInfo;
+        } else {
+            float dist[] = new float[graphAdjList.Graph.length];
+            boolean[] isInS = new boolean[graphAdjList.Graph.length];
+            float parents[] = new float[graphAdjList.Graph.length];
+            float parent;
+
+            Comparator<Integer> comparator = new Comparator<Integer>() {
+                public int compare(Integer v1, Integer v2) {
+                    if(dist[v1] > dist[v2])
+                        return 1;
+                    else if(dist[v1] < dist[v2])
+                        return -1;
+                    return 0;
+                }
+            };
+            
+            PriorityQueue<Integer> heap = new PriorityQueue<Integer>(comparator);
+
+            for (int v = 1; v < graphAdjList.Graph.length; v++) {
+                dist[v] = infinite;
+                heap.add(v);
+            }
+
+            dist[s] = 0;
+            parents[s] = 0;
+
+            heap.remove(s);
+            heap.add(s);
+
+            while(heap.size() != 0) {
+                Integer u = heap.poll();
+
+                isInS[u] = true;
+                for (Integer v : graphAdjList.Graph[u]){
+                    if(!isInS[v]) {
+                        float weight = getWeight(graphAdjList, null, u, v);
+                        if(dist[v] > dist[u] + weight) {
+                            dist[v] = dist[u] + weight;
+                            heap.remove(v);
+                            heap.add(v);
+                            parents[v] = u;
+                        }
+                    }
+                }
+            }
+            
+            HashMap<String, float[]> dijkstraInfo = new HashMap<String, float[]>();
+            dijkstraInfo.put("distances", dist);
+            dijkstraInfo.put("parents", parents);
+            return dijkstraInfo;
+        }
+    }
+
+    public static float[][] FloydWarshall(AdjacentList graphAdjList, AdjacentMatrix graphAdjMatrix) {
+        if(graphAdjMatrix != null) {
+            int n = graphAdjMatrix.Graph.length;
+            float[][] d = new float[n][n];
+            int [][] next = new int[n][n];
+                        
+            for (int i = 1; i < n; i++) {
+                for (int j = 1; j < n; j++) {
+                    if(j == i){
+                        d[i][j] = 0;   
+                    } else {
+                        d[i][j] = getWeight(null, graphAdjMatrix, i, j);
+                    }
+
+                    if(d[i][j] < (Float.MAX_VALUE/2 -10)) next[i][j] = j;
+                    else next[i][j] = -1;
+                }
+            }
+
+            for (int k = 1; k < n; k++) {
+                for (int i = 1; i < n; i++) {
+                    for (int j = 1; j < n; j++) {
+                        if(d[i][j] > d[i][k] + d[k][j]) {
+                                d[i][j] = d[i][k] + d[k][j];
+                                next[i][j] = next[i][k];
+                        }
+                    }
+                }
+            }
+            return d;
+        } else {
+            int n = graphAdjList.Graph.length;
+            float[][] d = new float[n][n];
+            int [][] next = new int[n][n];
+                        
+            for (int i = 1; i < n; i++) {
+                for (int j = 1; j < n; j++) {
+                    if(j == i){
+                        d[i][j] = 0;   
+                    } else {
+                        d[i][j] = getWeight(graphAdjList, null, i, j);
+                    }
+
+                    if(d[i][j] < (Float.MAX_VALUE/2 -10)) next[i][j] = j;
+                    else next[i][j] = -1;
+                }
+            }
+
+            for (int k = 1; k < n; k++) {
+                for (int i = 1; i < n; i++) {
+                    for (int j = 1; j < n; j++) {
+                        if(d[i][j] > d[i][k] + d[k][j]) {
+                                d[i][j] = d[i][k] + d[k][j];
+                                next[i][j] = next[i][k];
+                            }
+                    }
+                }
+            }
+            return d;
+        }
+    }
+
+    public static AdjacentList Kruskal(AdjacentList graphAdjList, AdjacentMatrix graphAdjMatrix) {
+        if(graphAdjMatrix != null) {
+        GraphData graphData = new GraphData();
+        graphData.Edges = new ArrayList<>();
+        graphData.Vertices = new ArrayList<>();
+        graphData.NumberOfVertices = graphAdjMatrix.Graph.length - 1;
+
+        Comparator<Edge> comparator = new Comparator<Edge>() {
+            public int compare(Edge e1, Edge e2) {
+                if(e1.weight > e2.weight)
+                    return 1;
+                else if(e1.weight < e2.weight)
+                    return -1;
+                return 0;
+            }
+        };
+
+        graphAdjMatrix.Edges.sort(comparator);
+
+        for (Edge e : graphAdjMatrix.Edges) {
+            graphData.Edges.add(e);
+
+            if(!graphData.Vertices.contains(e.firstNode)){
+                graphData.Vertices.add(e.firstNode);
+            }
+
+            if(!graphData.Vertices.contains(e.secondNode)){
+                graphData.Vertices.add(e.secondNode);
+            }
+
+            if(graphData.Vertices.size() == graphAdjMatrix.vertices.size()) break;
+        }
+
+        AdjacentList mst = new AdjacentList(graphData);
+        return mst;
+        } else {
+            GraphData graphData = new GraphData();
+            graphData.Edges = new ArrayList<>();
+            graphData.Vertices = new ArrayList<>();
+            graphData.NumberOfVertices = graphAdjList.Graph.length - 1;
+
+        Comparator<Edge> comparator = new Comparator<Edge>() {
+            public int compare(Edge e1, Edge e2) {
+                if(e1.weight > e2.weight)
+                    return 1;
+                else if(e1.weight < e2.weight)
+                    return -1;
+                return 0;
+            }
+        };
+
+        graphAdjList.Edges.sort(comparator);
+
+        for (Edge e : graphAdjList.Edges) {
+            graphData.Edges.add(e);
+
+            if(!graphData.Vertices.contains(e.firstNode)){
+                graphData.Vertices.add(e.firstNode);
+            }
+
+            if(!graphData.Vertices.contains(e.secondNode)){
+                graphData.Vertices.add(e.secondNode);
+            }
+
+            if(graphData.Vertices.size() == graphAdjList.vertices.size()) break;
+        }
+
+        AdjacentList mst = new AdjacentList(graphData);
+        return mst;
+        }
+    } 
+
 }
