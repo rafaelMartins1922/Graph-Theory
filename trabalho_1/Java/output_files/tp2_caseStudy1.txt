@@ -1,0 +1,47 @@
+Caso de Estudo 1:
+
+Distâncias pela BFS (sem considerar os pesos)
+  Grafo1
+  Entre os vértices 1 e 10: 2
+  Entre os vértices 1 e 20: 2
+  Entre os vértices 1 e 30: 2
+  Entre os vértices 1 e 40: 3
+  Entre os vértices 1 e 50: 2
+
+  Grafo2
+  Entre os vértices 1 e 10: 3
+  Entre os vértices 1 e 20: 2
+  Entre os vértices 1 e 30: 3
+  Entre os vértices 1 e 40: 3
+  Entre os vértices 1 e 50: 3
+
+  Grafo3
+  Entre os vértices 1 e 10: 3
+  Entre os vértices 1 e 20: 3
+  Entre os vértices 1 e 30: 3
+  Entre os vértices 1 e 40: 3
+  Entre os vértices 1 e 50: 3
+
+
+Distâncias pelo algoritmo de Dijkstra
+  Grafo1
+  Entre os vértices 1 e 10: 0.90999997
+  Entre os vértices 1 e 20: 1.26
+  Entre os vértices 1 e 30: 1.78
+  Entre os vértices 1 e 40: 1.55
+  Entre os vértices 1 e 50: 1.16
+
+  Grafo2
+  Entre os vértices 1 e 10: 2.0399997
+  Entre os vértices 1 e 20: 2.2499998
+  Entre os vértices 1 e 30: 2.2099998
+  Entre os vértices 1 e 40: 1.6200001
+  Entre os vértices 1 e 50: 2.2299998
+
+  Grafo3
+  Entre os vértices 1 e 10: 1.72
+  Entre os vértices 1 e 20: 1.66
+  Entre os vértices 1 e 30: 2.26
+  Entre os vértices 1 e 40: 1.9299998
+  Entre os vértices 1 e 50: 2.0399997
+

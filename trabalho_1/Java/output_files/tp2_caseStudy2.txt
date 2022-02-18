@@ -1,0 +1,11 @@
+Caso de Estudo 2:
+
+  Grafo 1
+  Tempo m�dio de 100 buscas BFS para achar dist�ncia de um v�rtice a todos os outros do grafo: 1ms
+  Tempo m�dio de 100 buscas com o algoritmo de Dijsktra para achar dist�ncia de um v�rtice a todos os outros do grafo: 4ms
+  Grafo 2
+  Tempo m�dio de 100 buscas BFS para achar dist�ncia de um v�rtice a todos os outros do grafo: 5ms
+  Tempo m�dio de 100 buscas com o algoritmo de Dijsktra para achar dist�ncia de um v�rtice a todos os outros do grafo: 447ms
+  Grafo 3
+  Tempo m�dio de 100 buscas BFS para achar dist�ncia de um v�rtice a todos os outros do grafo: 271ms
+  Tempo de dez buscas com o algoritmo de Dijsktra para achar dist�ncia de um v�rtice a todos os outros do grafo: 679352ms
