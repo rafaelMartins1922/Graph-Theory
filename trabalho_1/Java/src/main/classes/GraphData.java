@@ -12,4 +12,6 @@ public class GraphData {
     public ArrayList<Integer> Vertices;
     public ArrayList<Edge> Edges;
     public int MaxVertex;
+    public boolean hasNegativeWeights;
+    public boolean hasWeights;
 }
