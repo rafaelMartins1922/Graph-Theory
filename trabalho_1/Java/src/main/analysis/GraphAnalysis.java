@@ -453,6 +453,7 @@ public class GraphAnalysis {
         }
     }
 
+    //Pega o peso de uma aresta do grafo
     public static float getWeight(AdjacentList graphAdjList, AdjacentMatrix graphAdjMatrix, Integer i, Integer j) {
         if(graphAdjMatrix != null) {
             float weight =  graphAdjMatrix.Weights[i][j];
@@ -464,6 +465,7 @@ public class GraphAnalysis {
         }
     }
 
+    //Roda o algoritmo de Dijkstra sobre um grafo
     public static HashMap<String, float[]> Dijkstra(AdjacentList graphAdjList, AdjacentMatrix graphAdjMatrix, Integer s){
         float infinite = Float.MAX_VALUE;
         
@@ -568,7 +570,7 @@ public class GraphAnalysis {
             return dijkstraInfo;
         }
     }
-
+    //Roda o algoritmo de Floyd-Warshal sobre o grafo
     public static float[][] FloydWarshall(AdjacentList graphAdjList, AdjacentMatrix graphAdjMatrix) {
         if(graphAdjMatrix != null) {
             int n = graphAdjMatrix.Graph.length;
@@ -630,7 +632,7 @@ public class GraphAnalysis {
             return d;
         }
     }
-
+    //Roda o algoritmo de Kruskal para gerar a MST de um grafo
     public static AdjacentList Kruskal(AdjacentList graphAdjList, AdjacentMatrix graphAdjMatrix) {
         if(graphAdjMatrix != null) {
         GraphData graphData = new GraphData();
