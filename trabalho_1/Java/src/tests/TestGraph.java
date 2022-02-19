@@ -125,7 +125,7 @@ public class TestGraph {
             e.printStackTrace();
         }
     }
-   
+   //Observação - não foi possível testar a função do estudo de caso 4 pois ela apresentou erro de estouro de memória devido ao tamanho do grafo
     public static void tp2_caseStudy4(){
         try{
             for(int i = 1; i<=3; i++){
