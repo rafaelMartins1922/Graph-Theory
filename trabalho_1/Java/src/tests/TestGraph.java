@@ -87,7 +87,7 @@ public class TestGraph {
                     fileWriter.write("  Tempo médio de 100 buscas com o algoritmo de Dijsktra para achar distância de um vértice a todos os outros do grafo: " + (timeAfterDijsktra-timeAfterBFS)/100 + "ms\n");
     
                 } else {
-                    for (int j = 0; j < 1; j++){
+                    for (int j = 0; j < 10; j++){
                         GraphAnalysis.Dijkstra(graphAdjList, null, rand.nextInt(graphAdjList.Graph.length-1)+1);
                     }
                     long timeAfterDijsktra = System.currentTimeMillis();
