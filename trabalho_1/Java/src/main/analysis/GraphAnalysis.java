@@ -604,7 +604,6 @@ public class GraphAnalysis {
         } else {
             int n = graphAdjList.Graph.length;
             float[][] d = new float[n][n];
-            int [][] next = new int[n][n];
                         
             for (int i = 1; i < n; i++) {
                 for (int j = 1; j < n; j++) {
@@ -613,9 +612,6 @@ public class GraphAnalysis {
                     } else {
                         d[i][j] = getWeight(graphAdjList, null, i, j);
                     }
-
-                    if(d[i][j] < (Float.MAX_VALUE/2 -10)) next[i][j] = j;
-                    else next[i][j] = -1;
                 }
             }
 
@@ -624,7 +620,6 @@ public class GraphAnalysis {
                     for (int j = 1; j < n; j++) {
                         if(d[i][j] > d[i][k] + d[k][j]) {
                                 d[i][j] = d[i][k] + d[k][j];
-                                next[i][j] = next[i][k];
                             }
                     }
                 }
