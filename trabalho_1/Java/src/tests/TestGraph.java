@@ -17,7 +17,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 public class TestGraph {
     public static void main(String[] args) {
-        tp2_caseStudy4();
+        tp2_caseStudy1();
     }
     
 
@@ -28,7 +28,7 @@ public class TestGraph {
             fileWriter.write("Caso de Estudo 1:\n\n");
             fileWriter.write("Distâncias pela BFS (sem considerar os pesos)\n");
 
-            for(int i = 1; i <= 3; i++){
+            for(int i = 1; i <= 1; i++){
                 fileWriter.write("  Grafo " + i + '\n');
                 AdjacentList graphAdjList = new AdjacentList(GraphAnalysis.SetGraphData("grafo_W_"+i+"_1.txt"));
                 HashMap<String,int[]> bfsData = GraphAnalysis.BFS(graphAdjList, null, 1);
@@ -42,7 +42,7 @@ public class TestGraph {
 
             fileWriter.write("\nDistâncias pelo algoritmo de Dijkstra\n");
 
-            for(int i = 1; i <= 3; i++){
+            for(int i = 1; i <= 1; i++){
                 fileWriter.write("  Grafo " + i + '\n');
                 AdjacentList graphAdjList = new AdjacentList(GraphAnalysis.SetGraphData("grafo_W_"+i+"_1.txt"));
                 HashMap<String,float[]> dijkstraData = GraphAnalysis.Dijkstra(graphAdjList, null, 1);
